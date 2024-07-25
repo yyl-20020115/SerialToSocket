@@ -1,0 +1,45 @@
+#ifndef VIRTUALCOM_H
+#define VIRTUALCOM_H
+
+#include <string>
+#include <stdint.h>
+
+class VirtualCom
+{
+public:
+    /**
+    * 定义虚拟串口对
+    * 每一对虚拟串口在创建时会自动生成序号
+    **/
+    struct CommPairType {
+        uint8_t index;
+        std::wstring comA;
+        std::wstring comB;
+    };
+
+    //以阻塞方式执行一个命令并返回其执行结果
+    uint8_t execReadBack(const std::wstring& cmd, char* read_buff, size_t buff_len);
+
+    //安装虚拟串口驱动
+    uint8_t installDriver();
+
+    //加载虚拟串口列表
+    void loadCommPairs(CommPairType* commPairs, size_t* numOfPairs);
+
+    //创建一对新的虚拟串口
+    void createComPair(const std::wstring& comportA, const std::wstring& comportB);
+
+    //删除指定的一对虚拟串口
+    void removeComPair(uint8_t pairIndex);
+
+protected:
+
+private:
+    //禁用拷贝构造
+    VirtualCom();
+    ~VirtualCom();
+    VirtualCom(const VirtualCom&);
+    void operator=(VirtualCom&);
+};
+
+#endif // VIRTUALCOM_H

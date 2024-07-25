@@ -1,0 +1,5 @@
+LIBRARY  SETUP
+
+EXPORTS
+   Main
+   RunDll
