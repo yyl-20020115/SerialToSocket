@@ -29,42 +29,67 @@
 
 #pragma once
 
-namespace SetupApp {
-  using namespace System;
-  using namespace System::Collections::Generic;
+namespace SetupApp 
+{
+	using namespace System;
+	using namespace System::Collections::Generic;
 
-  ref class PortParams : public Dictionary<String ^, String ^> {
-    public:
-      PortParams() {}
-      PortParams(String ^str);
-  };
+	ref class PortParams : public Dictionary<String^, String^> {
+	public:
+		PortParams() :Dictionary(32) {}
+		PortParams(String^ str) :Dictionary(32)
+		{
+			array<Char>^ separator = { ',' };
+			array<String^>^ prms = str->Split(separator, StringSplitOptions::RemoveEmptyEntries);;
 
-  ref class PortPair {
-    public:
-      PortPair() { ports = gcnew array<PortParams ^>{gcnew PortParams, gcnew PortParams}; }
+			for (int i = 0; i < prms->Length; i++) {
+				array<Char>^ separator = { '=' };
+				array<String^>^ parameter = prms[i]->Split(separator);
 
-      PortParams ^operator [](int i) { return ports[i]; }
-      void Set(int i, PortParams ^port) { ports[i] = port; }
-      bool IsEmpty() { return ports[0]->Count == 0 && ports[1]->Count == 0; }
+				if (parameter->Length == 2) {
+					this->Item[parameter[0]->ToLower()] = parameter[1]->ToUpper();
+				}
+			}
+		}
+	public:
+		property String^ Item[String^ ] 
+		{ 
+			 String^ get(String^ key) new {
+				return dynamic_cast<Dictionary<String^,String^>^>(this)[key];
+			}
+			void set(String^ key, String^ value) new {
+				dynamic_cast<Dictionary<String^,String^>^>(this)[key] = value;
+			}
+		};
+	};
 
-    private:
-      array<PortParams ^> ^ports;
-  };
+	ref class PortPair {
+	public:
+		PortPair() { ports = gcnew array<PortParams^>{gcnew PortParams, gcnew PortParams}; }
 
-  ref class PortPairs : public Dictionary<String ^, PortPair ^> {
-    public:
-      PortPairs(System::Windows::Forms::Control ^_parent) : parent(_parent) {}
-      void Init();
-      String ^AddPair();
-      void RemovePair(String ^keyPair);
-      void ChangePair(String ^keyPair, PortPair ^pairChanges);
-      bool IsValidName(String ^name);
+		PortParams^ operator [](int i) { return ports[i]; }
+		void Set(int i, PortParams^ port) { ports[i] = port; }
+		bool IsEmpty() { return ports[0]->Count == 0 && ports[1]->Count == 0; }
 
-    private:
-      String ^ParseLine(String ^line);
-      void LoadBusyNames();
+	private:
+		array<PortParams^>^ ports;
+	};
 
-      array<String ^> ^busyNames;
-      System::Windows::Forms::Control ^parent;
-  };
+	ref class PortPairs : public Dictionary<String^, PortPair^> {
+	public:
+		PortPairs(System::Windows::Forms::Control^ _parent)
+			: Dictionary(32), parent(_parent) {}
+		void Init();
+		String^ AddPair();
+		void RemovePair(String^ keyPair);
+		void ChangePair(String^ keyPair, PortPair^ pairChanges);
+		bool IsValidName(String^ name);
+
+	private:
+		String^ ParseLine(String^ line);
+		void LoadBusyNames();
+
+		array<String^>^ busyNames;
+		System::Windows::Forms::Control^ parent;
+	};
 }

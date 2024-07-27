@@ -43,8 +43,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	Application::EnableVisualStyles();
 	Application::SetCompatibleTextRenderingDefault(false);
 
-	// Create the main window and run it
-	Application::Run(gcnew Form1());
-	// 你的应用程序初始化和消息循环代码
+	Application::Run(gcnew FormMain());
 	return 0;
 }

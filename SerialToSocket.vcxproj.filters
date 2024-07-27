@@ -72,6 +72,9 @@
     <ClInclude Include="Utils.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="CEXPLORER_WEB_BROWSER.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SerialToSocket.cpp">
@@ -111,6 +114,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Utils.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CEXPLORER_WEB_BROWSER.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

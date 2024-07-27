@@ -40,20 +40,8 @@ using namespace System;
 using namespace System::Collections::Generic;
 
 
-PortParams::PortParams(String ^str)
-{
-  array<Char> ^separator = {','};
-  array<String ^> ^prms = str->Split(separator, StringSplitOptions::RemoveEmptyEntries);;
+//PortParams::PortParams(String ^str)
 
-  for (int i = 0 ; i < prms->Length ; i++) {
-    array<Char> ^separator = {'='};
-    array<String ^> ^prm = prms[i]->Split(separator);
-
-    if (prm->Length == 2) {
-      this[prm[0]->ToLower()] = prm[1]->ToUpper();
-    }
-  }
-}
 
 String ^PortPairs::ParseLine(String ^line)
 {
