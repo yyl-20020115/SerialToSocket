@@ -13,20 +13,22 @@
 #define IDC_EDIT_IP                     1002
 #define IDC_EDIT_PORT                   1003
 #define IDC_BUTTON_START                1004
-#define IDC_COMBO_BAUD                  1005
-#define IDC_COMBO_BAUD2                 1006
-#define IDC_COMBO_BAUD3                 1007
-#define IDC_COMBO_BAUD4                 1008
-#define IDC_COMBO_BAUD5                 1009
+#define IDC_COMBO_BAUD_RATE_LIST_0      1005
+#define IDC_COMBO_DATA_BITS_0           1006
+#define IDC_COMBO_PARITIES_0            1007
+#define IDC_COMBO_STOP_BITS_0           1008
+#define IDC_COMBO_COM_PORT_LIST_0       1009
 #define IDC_BUTTON_MAPPING              1010
 #define IDC_BUTTON_WIFI_COM             1011
 #define IDC_BUTTON_CONNECT              1012
-#define IDC_EXPLORER_WEB_BROWSER        1014
-#define IDC_COMBO_DATA_BITS             1015
+#define IDC_COMBO_BAUD_RATE_LIST        1013
+#define IDC_COMBO_DATA_BITS_LIST        1015
 #define IDC_COMBO_PARITIES_LIST         1016
 #define IDC_COMBO_STOP_BITS_LIST        1017
-#define IDC_COMBO_COM_PORT              1018
 #define IDC_COMBO_COM_PORTS_LIST        1018
+#define IDC_EDIT_SSID_PASSWORD          1020
+#define IDC_COMBO1                      1021
+#define IDC_COMBO_SSID                  1021
 
 // Next default values for new objects
 // 
@@ -34,7 +36,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        133
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1019
+#define _APS_NEXT_CONTROL_VALUE         1022
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

@@ -37,4 +37,13 @@ public:
 	afx_msg void OnBnClickedButtonStart();
 	afx_msg void OnBnClickedOk();
 	afx_msg void OnBnClickedCancel();
+	CEdit EditIP;
+	CEdit EditPort;
+	CComboBox ComPortsList;
+	CComboBox BaudRateList;
+	CComboBox DataBitsList;
+	CComboBox ParitiesList;
+	CComboBox StopBitsList;
+	CEdit Edit_Password;
+	CComboBox ComboSSIDList;
 };

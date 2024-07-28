@@ -29,27 +29,23 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg void OnBnClickedOk();
-
-public:
 	afx_msg void OnBnClickedButtonRestore();
 	afx_msg void OnBnClickedButtonReset();
 	afx_msg void OnBnClickedCancel();
 	afx_msg void OnBnClickedButtonConnect();
-	CEdit URL_Edit;
-	BOOL DocumentCompleted = FALSE;
 	virtual BOOL OnInitDialog();
-	CEXPLORER_WEB_BROWSER WebBrowser;
-	CComboBox COMPortList;
+	CComboBox ComPortsList;
 	CComboBox BaudRateList;
 	CComboBox DataBitsList;
 	CComboBox StopBitsList;
-	CString GetTextFromWebBrowser(CEXPLORER_WEB_BROWSER& WebBrowser,CString name);
-	void WaitForDocumentComplete();
+	CEdit URL_Edit;
 protected:
-	void GetStatusValues();
-	void GetNetSetValues();
-	void GetSerialSetValues();
-	void GetWIFISetValues();
+	void LoadValues();
+	void SaveValues();
+	bool PostNetSetValues();
+	bool PostSerialSetValues();
+	bool PostWIFISetValues();
+	bool DoPost(const std::string& url, const std::string& file, const std::string& body);
 
 protected:
 	CString STATUS_mac;
@@ -80,6 +76,9 @@ protected:
 	CString SERIAL_uart_log;
 
 protected:
+	CString WIFI_apE;
+	CString WIFI_dhcpE;
+	CString WIFI_staE;
 	CString WIFI_staN;
 	CString WIFI_staP;
 	CString WIFI_staIP;
@@ -90,9 +89,6 @@ protected:
 	CString WIFI_apIP;
 	CString WIFI_apNM;
 	CString WIFI_apGW;
-public:
-	DECLARE_EVENTSINK_MAP()
-	void OnDocumentcompleteExplorerWebBrowser(LPDISPATCH pDisp, VARIANT* URL);
 
 protected:
 
