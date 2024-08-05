@@ -61,7 +61,19 @@ static std::string replace(const std::string& s, const std::string& a, const std
 	}
 	return str;
 }
-
+static bool split(const std::string& s, const char c, std::vector<std::string>& list) {
+	std::string::size_type begin = 0, end = 0;
+	while (s.npos != (end = s.find(c, begin)))
+	{
+		list.push_back(s.substr(begin, end-begin));
+		begin = end + 1;
+	}
+	//use the whole string s if no c found
+	if (list.size() == 0) {
+		list.push_back(s);
+	}
+	return list.size() > 0;
+}
 static bool StringStartsWith(const std::string& s, const std::string& t, bool case_sensitive = true) {
 	return
 		case_sensitive
@@ -156,11 +168,31 @@ void CSetWIFIDialog::OnBnClickedButtonConnect()
 	this->LoadValues();
 }
 
+static int BaudRates[] = {
+	3686400,
+	1843200,
+	921600,
+	460800,
+	230400,
+	115200,
+	74880,
+	57600,
+	38400,
+	19200,
+	9600,
+	4800,
+	2400,
+	1200,
+	600,
+	300,
+};
 
 BOOL CSetWIFIDialog::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 	this->URL_Edit.SetWindowText(URL);
+
+
 
 	SOCKADDR address = { 0 }, dns_address = { 0 }, dhcp_address = { 0 };
 
@@ -173,7 +205,7 @@ BOOL CSetWIFIDialog::OnInitDialog()
 			: 0
 			;
 		if (pwchar != NULL) {
-			
+
 		}
 
 	}
@@ -185,6 +217,7 @@ BOOL CSetWIFIDialog::OnInitDialog()
 
 void CSetWIFIDialog::LoadValues()
 {
+	this->URL_Edit.GetWindowText(this->URL);
 	// version
 	// http://192.168.4.1/about.html
 	// restore
@@ -200,12 +233,16 @@ void CSetWIFIDialog::LoadValues()
 	// paraCallBack({'baud':'9600','databit':'3','parity':'2','stop':'1','rs485':'100','uart_time':'50','split_time':'0','uart_log':'0'})
 	// http://192.168.4.1/status_para.js
 	// paraCallBack({'softver':'Doit_Ser2Sock_3.2.1_20171229','hardver':'Doit_WiFi_TTL_V2.0','ID':'4B696E636F','vend':'Doit Corp. Inc.','mac':'84-0D-8E-4E-33-36','staIP':'0.0.0.0','wifi':'un known','apIP':'192.168.4.1','time':'0 days 02:36:18'})
-
+	// http://192.168.4.1/sta_scan.js
+	// scanCallBack({'scan':'Mate 20 X$ChinaNet-t6Vd$ChinaNet-t6Vd-iTV$CU_FaQE$DIRECT-64-HP M233 LaserJet$TP-LINK_599D$FAST_2.4G_212F$GUOPAI$一只小可爱$OPPO A11x$'})
+	std::vector<std::string> list;
 	std::map<std::string, std::string> map;
-	if (ParseJs(CStringA(this->URL).GetString(), ("/status_para.js"), map)
-		&& ParseJs(CStringA(this->URL).GetString(), ("/serial_para.js"), map)
-		&& ParseJs(CStringA(this->URL).GetString(), ("/sta_para.js"), map)
-		&& ParseJs(CStringA(this->URL).GetString(), ("/net_para.js"), map)
+	ParseScanCallBack(CStringA(this->URL).GetString(), ("/sta_scan.js"), list);
+	
+	if (ParseParametersCallBack(CStringA(this->URL).GetString(), ("/status_para.js"), map)
+		&& ParseParametersCallBack(CStringA(this->URL).GetString(), ("/serial_para.js"), map)
+		&& ParseParametersCallBack(CStringA(this->URL).GetString(), ("/sta_para.js"), map)
+		&& ParseParametersCallBack(CStringA(this->URL).GetString(), ("/net_para.js"), map)
 		) {
 		this->STATUS_mac = CString(map[("mac")].c_str());
 		this->STATUS_staIP = CString(map[("staIP")].c_str());
@@ -351,7 +388,7 @@ bool CSetWIFIDialog::DoPost(const std::string& url, const std::string& file, con
 	}
 	return done;
 }
-bool CSetWIFIDialog::ParseJs(const std::string& url, const std::string& file, std::map<std::string, std::string>& map)
+bool CSetWIFIDialog::ParseParametersCallBack(const std::string& url, const std::string& file, std::map<std::string, std::string>& map)
 {
 	bool done = false;
 	httplib::Client* cli = new httplib::Client(url);
@@ -359,14 +396,14 @@ bool CSetWIFIDialog::ParseJs(const std::string& url, const std::string& file, st
 		//call this get to restore
 		auto http_get = cli->Get(file);
 		if (http_get && http_get->status == httplib::StatusCode::OK_200) {
-			done = this->ParseJs(http_get->body.c_str(), map);
+			done = this->ParseParametersCallBack(http_get->body.c_str(), map);
 		}
 		delete cli;
 	}
 	return done;
 }
 
-bool CSetWIFIDialog::ParseJs(const std::string& js, std::map<std::string, std::string>& map)
+bool CSetWIFIDialog::ParseParametersCallBack(const std::string& js, std::map<std::string, std::string>& map)
 {
 	// paraCallBack({'softver':'Doit_Ser2Sock_3.2.1_20171229','hardver':'Doit_WiFi_TTL_V2.0','ID':'4B696E636F','vend':'Doit Corp. Inc.','mac':'84-0D-8E-4E-33-36','staIP':'0.0.0.0','wifi':'un known','apIP':'192.168.4.1','time':'0 days 02:36:18'})
 	if (StringStartsWith(js, "paraCallBack(") && StringEndsWith(js, ")"))
@@ -385,6 +422,51 @@ bool CSetWIFIDialog::ParseJs(const std::string& js, std::map<std::string, std::s
 					dump = dump.substr(1, dump.size() - 2);
 				}
 				map[key] = dump;
+			}
+			return true;
+		}
+		catch (...) {
+
+		}
+	}
+	return false;
+}
+
+bool CSetWIFIDialog::ParseScanCallBack(const std::string& url, const std::string& file, std::vector<std::string>& list)
+{
+	bool done = false;
+	httplib::Client* cli = new httplib::Client(url);
+	if (cli != nullptr) {
+		//call this get to restore
+		auto http_get = cli->Get(file);
+		if (http_get && http_get->status == httplib::StatusCode::OK_200) {
+			done = this->ParseScanCallBack(http_get->body.c_str(), list);
+		}
+		delete cli;
+	}
+	return done;
+}
+// scanCallBack({'scan':'Mate 20 X$ChinaNet-t6Vd$ChinaNet-t6Vd-iTV$CU_FaQE$DIRECT-64-HP M233 LaserJet$TP-LINK_599D$FAST_2.4G_212F$GUOPAI$一只小可爱$OPPO A11x$'})
+bool CSetWIFIDialog::ParseScanCallBack(const std::string& js, std::vector<std::string>& list)
+{
+	if (StringStartsWith(js, "scanCallBack(") && StringEndsWith(js, ")"))
+	{
+		size_t sl = strlen("scanCallBack(");
+		size_t st = strlen(")");
+		std::string json_text = js.substr(sl, js.size() - sl - st);
+		json_text = replace(json_text, "\'", "\"");
+		std::stringstream fs(json_text);
+		try {
+			const char splitter = '$';
+			nlohmann::json data = nlohmann::json::parse(fs);
+			auto& scan = data["scan"];
+			if (scan.is_string()) {
+				std::string dump = scan.dump();
+				if (dump.size() >= 2) {
+					dump = dump.substr(1, dump.size() - 2);
+				}
+				//string split by '$'
+				return split(dump,splitter,list);
 			}
 			return true;
 		}

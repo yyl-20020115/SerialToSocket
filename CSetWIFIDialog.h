@@ -92,7 +92,11 @@ protected:
 
 protected:
 
-	bool ParseJs(const std::string& url,const std::string& file, std::map<std::string, std::string>& map);
-	bool ParseJs(const std::string& js, std::map<std::string, std::string>& map);
+	bool ParseParametersCallBack(const std::string& url,const std::string& file, std::map<std::string, std::string>& map);
+	bool ParseParametersCallBack(const std::string& js, std::map<std::string, std::string>& map);
+
+	bool ParseScanCallBack(const std::string& url, const std::string& file, std::vector<std::string>& list);
+	bool ParseScanCallBack(const std::string& js, std::vector<std::string>& list);
+
 
 };

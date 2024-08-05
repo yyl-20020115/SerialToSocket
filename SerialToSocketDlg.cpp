@@ -52,7 +52,7 @@ bool GetLocalMachineIPAddress(SOCKADDR* pAddress, SOCKADDR* pDNSAddress = 0, SOC
 	if (pAddress != NULL) {
 		*pAddress = *pAddresses->FirstUnicastAddress->Address.lpSockaddr;
 	}
-	if (pDNSAddress != NULL) {
+	if (pDNSAddress != NULL && pAddresses->FirstDnsServerAddress !=NULL) {
 		*pDNSAddress = *pAddresses->FirstDnsServerAddress->Address.lpSockaddr;
 	}
 
